@@ -1,4 +1,5 @@
-#include "../libcard/libcard.h"
+#define LIBGAME_IMPLEMENTATION
+#include "../libgame.h"
 #include <stdio.h>
 
 // Print a hand (player or dealer)

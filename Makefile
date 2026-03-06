@@ -1,44 +1,22 @@
-# Directories
-LIBCARD_DIR = libcard
 GAMES_DIR = games
 BUILD_DIR = build
+BIN_DIR   = $(BUILD_DIR)/bin
 
-# Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I$(LIBCARD_DIR) -I$(GAMES_DIR)
+CC     = gcc
+CFLAGS = -Wall -Wextra -std=c99 -I.
 
-# Output directories for build files
-OBJ_DIR = $(BUILD_DIR)/obj
-BIN_DIR = $(BUILD_DIR)/bin
-LIB_DIR = $(BUILD_DIR)/libcard
+$(shell mkdir -p $(BIN_DIR))
 
-# Source files for libcard
-LIBCARD_SRC = $(LIBCARD_DIR)/libcard.c
-LIBCARD_OBJ = $(OBJ_DIR)/libcard.o
-
-# Create directories if they don't exist
-$(shell mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR))
-
-# List all game source files (currently looks in the games/ directory)
 GAME_SOURCES = $(wildcard $(GAMES_DIR)/*.c)
 
-# Default target: build all games
 all: $(GAME_SOURCES:$(GAMES_DIR)/%.c=$(BIN_DIR)/%)
 
-# Rule to build each game executable
-$(BIN_DIR)/%: $(GAMES_DIR)/%.c $(LIBCARD_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+$(BIN_DIR)/%: $(GAMES_DIR)/%.c libgame.h
+	$(CC) $(CFLAGS) -o $@ $<
 	@echo "Built $@"
 
-# Rule to build libcard object file
-$(LIBCARD_OBJ): $(LIBCARD_SRC)
-	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Built libcard object file"
-
-# Clean the build
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(BUILD_DIR)
 	@echo "Cleaned build files"
 
-# Phony targets (don't create files named 'clean' or 'all')
 .PHONY: all clean
